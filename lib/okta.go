@@ -85,7 +85,7 @@ func NewOktaClient(creds OktaCreds, oktaAwsSAMLUrl string, sessionCookie string)
 	}, nil
 }
 
-func (o *OktaClient) AuthenticateProfile(profileARN string, duration time.Duration) (sts.Credentials, string, error) {
+func (o *OktaClient) AuthenticateProfile(profileARN string, duration time.Duration) (sts.Credentials, string, string, error) {
 	var oktaUserAuthn OktaUserAuthn
 
 	// Attempt to reuse session cookie
@@ -101,13 +101,13 @@ func (o *OktaClient) AuthenticateProfile(profileARN string, duration time.Durati
 
 		payload, err := json.Marshal(user)
 		if err != nil {
-			return sts.Credentials{}, "", err
+			return sts.Credentials{}, "", "", err
 		}
 
 		log.Debug("Step: 1")
 		err = o.Get("POST", "api/v1/authn", payload, &oktaUserAuthn, "json")
 		if err != nil {
-			return sts.Credentials{}, "", errors.New("Failed to authenticate with okta.  Please check that your credentials have been set correctly with `aws-okta add`")
+			return sts.Credentials{}, "", "", errors.New("Failed to authenticate with okta.  Please check that your credentials have been set correctly with `aws-okta add`")
 		}
 
 		o.UserAuth = &oktaUserAuthn
@@ -117,25 +117,25 @@ func (o *OktaClient) AuthenticateProfile(profileARN string, duration time.Durati
 		if o.UserAuth.Status == "MFA_REQUIRED" {
 			log.Info("Requesting MFA")
 			if err = o.challengeMFA(); err != nil {
-				return sts.Credentials{}, "", err
+				return sts.Credentials{}, "", "", err
 			}
 		}
 
 		if o.UserAuth.SessionToken == "" {
-			return sts.Credentials{}, "", fmt.Errorf("authentication failed for %s", o.Username)
+			return sts.Credentials{}, "", "", fmt.Errorf("authentication failed for %s", o.Username)
 		}
 
 		// Step 3 : Get SAML Assertion and retrieve IAM Roles
 		log.Debug("Step: 3")
 		if err = o.Get("GET", o.OktaAwsSAMLUrl+"?onetimetoken="+o.UserAuth.SessionToken,
 			nil, &assertion, "saml"); err != nil {
-			return sts.Credentials{}, "", err
+			return sts.Credentials{}, "", "", err
 		}
 	}
 
 	principal, role, err := GetRoleFromSAML(assertion.Resp, profileARN)
 	if err != nil {
-		return sts.Credentials{}, "", err
+		return sts.Credentials{}, "", "", err
 	}
 
 	// Step 4 : Assume Role with SAML
@@ -153,7 +153,7 @@ func (o *OktaClient) AuthenticateProfile(profileARN string, duration time.Durati
 	if err != nil {
 		log.WithField("role", role).Errorf(
 			"error assuming role with SAML: %s", err.Error())
-		return sts.Credentials{}, "", err
+		return sts.Credentials{}, "", "", err
 	}
 
 	var sessionCookie string
@@ -164,7 +164,9 @@ func (o *OktaClient) AuthenticateProfile(profileARN string, duration time.Durati
 		}
 	}
 
-	return *samlResp.Credentials, sessionCookie, nil
+	samAccountName, _ := GetNameFromSAML(assertion.Resp)
+
+	return *samlResp.Credentials, sessionCookie, samAccountName, nil
 }
 
 func selectMFADevice(factors []OktaUserAuthnFactor) (*OktaUserAuthnFactor, error) {
@@ -443,7 +445,7 @@ func (p *OktaProvider) Retrieve() (sts.Credentials, string, error) {
 		return sts.Credentials{}, "", err
 	}
 
-	creds, newSessionCookie, err := oktaClient.AuthenticateProfile(p.ProfileARN, p.SessionDuration)
+	creds, newSessionCookie, samAccountName, err := oktaClient.AuthenticateProfile(p.ProfileARN, p.SessionDuration)
 	if err != nil {
 		return sts.Credentials{}, "", err
 	}
@@ -457,5 +459,12 @@ func (p *OktaProvider) Retrieve() (sts.Credentials, string, error) {
 
 	p.Keyring.Set(newCookieItem)
 
-	return creds, oktaCreds.Username, err
+	var name string
+	if samAccountName == "" {
+		name = oktaCreds.Username
+	} else {
+		name = samAccountName
+	}
+
+	return creds, name, err
 }

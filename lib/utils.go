@@ -47,7 +47,18 @@ func GetRoleFromSAML(resp *saml.Response, profileARN string) (string, string, er
 
 	return "", "", fmt.Errorf("Role '%s' not authorized by Okta.  Contact Okta admin to make sure that the AWS app is configured properly.", profileARN)
 }
+func GetNameFromSAML(resp *saml.Response) (string, error) {
+	for _, a := range resp.Assertion.AttributeStatement.Attributes {
+		if strings.HasSuffix(a.Name, "SAML/Attributes/RoleSessionName") {
+			if len(a.AttributeValues) > 1 {
+				return "", fmt.Errorf("RoleSessionName is unexpectedly many")
+			}
+			return a.AttributeValues[0].Value, nil
+		}
+	}
 
+	return "", fmt.Errorf("No RoleSessionName found")
+}
 func ParseSAML(body []byte, resp *SAMLAssertion) (err error) {
 	var val string
 	var data []byte
