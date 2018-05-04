@@ -6,6 +6,10 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+
+	uniformResourceLocator "net/url"
+
+	"golang.org/x/net/html"
 )
 
 type DuoClient struct {
@@ -64,7 +68,7 @@ func (d *DuoClient) ChallengeU2f() (err error) {
 
 	tx = strings.Split(d.Signature, ":")[0]
 
-	sid, err = d.DoAuth(tx)
+	sid, _, err = d.DoAuth(tx, "", "")
 	if err != nil {
 		return
 	}
@@ -98,7 +102,7 @@ func (d *DuoClient) ChallengeU2f() (err error) {
 // From the Location we get the Duo Session ID (sid) required for the rest of the communication.
 //
 // The function will return the sid
-func (d *DuoClient) DoAuth(tx string) (sid string, err error) {
+func (d *DuoClient) DoAuth(tx string, inputSid string, inputCertsUrl string) (sid string, certs_url string, err error) {
 	var req *http.Request
 	var location string
 
@@ -113,7 +117,13 @@ func (d *DuoClient) DoAuth(tx string) (sid string, err error) {
 		},
 	}
 
-	req, err = http.NewRequest("POST", url, nil)
+	data := uniformResourceLocator.Values{}
+	if inputSid != "" && inputCertsUrl != "" {
+		data.Set("sid", inputSid)
+		data.Add("certs_url", inputCertsUrl)
+	}
+
+	req, err = http.NewRequest("POST", url, strings.NewReader(data.Encode()))
 	if err != nil {
 		return
 	}
@@ -134,6 +144,39 @@ func (d *DuoClient) DoAuth(tx string) (sid string, err error) {
 		} else {
 			err = fmt.Errorf("Location not part of the auth header. Authentication failed ?")
 		}
+	} else if res.StatusCode == http.StatusOK {
+		var isSid bool
+		var isCertsURL bool
+		doc, err := html.Parse(res.Body)
+		if err != nil {
+			err = fmt.Errorf("Can't parse response")
+		}
+		var f func(*html.Node)
+		f = func(n *html.Node) {
+			if n.Type == html.ElementNode && n.Data == "input" {
+				for _, a := range n.Attr {
+					if a.Key == "name" && a.Val == "sid" {
+						isSid = true
+					}
+					if a.Key == "value" && isSid {
+						sid = a.Val
+						isSid = false
+					}
+					if a.Key == "name" && a.Val == "certs_url" {
+						isCertsURL = true
+					}
+					if a.Key == "value" && isCertsURL {
+						certs_url = a.Val
+						isCertsURL = false
+					}
+				}
+			}
+			for c := n.FirstChild; c != nil; c = c.NextSibling {
+				f(c)
+			}
+		}
+		f(doc)
+		sid, certs_url, err = d.DoAuth(tx, sid, certs_url)
 	} else {
 		err = fmt.Errorf("Request failed or followed redirect: %d", res.StatusCode)
 	}
