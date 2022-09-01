@@ -20,7 +20,7 @@ jobs:
   test:
     docker:
       - image: circleci/golang:1.13
-    working_directory: /go/src/github.com/segmentio/aws-okta
+    working_directory: /go/src/github.com/optimizely/aws-okta
     steps:
       - run:
           # Do this prior to checkout so that it doesn't modify go.mod file.
@@ -54,7 +54,7 @@ jobs:
   dist-linux:
     docker:
       - image: circleci/golang:1.13
-    working_directory: /go/src/github.com/segmentio/aws-okta
+    working_directory: /go/src/github.com/optimizely/aws-okta
     steps:
       - checkout
       - run:
@@ -77,7 +77,7 @@ jobs:
   publish-packagecloud:
     docker:
       - image: circleci/golang:1.13
-    working_directory: /go/src/github.com/segmentio/aws-okta
+    working_directory: /go/src/github.com/optimizely/aws-okta
     steps:
       - checkout
       - attach_workspace: { at: . }
@@ -96,7 +96,7 @@ jobs:
   publish-github-linux:
     docker:
       - image: circleci/golang:1.13
-    working_directory: /go/src/github.com/segmentio/aws-okta
+    working_directory: /go/src/github.com/optimizely/aws-okta
     steps:
       - checkout
       - attach_workspace: { at: . }
@@ -132,7 +132,7 @@ workflows:
             tags:
               only: /v[0-9]+(\.[0-9]+)*(-[a-zA-Z0-9-]+)?/
       - publish-github-linux:
-          context: github-segmentcircle-oss-release
+          context: github-optimizelycircle-oss-release
           requires:
             - dist-linux
           filters:
