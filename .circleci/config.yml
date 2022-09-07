@@ -113,19 +113,23 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install nfpm, rpmbuild
-          command: |
-            sudo make -f Makefile.tools rpmbuild-darwin sha256sum-darwin
-      - run:
-          name: Install libusb
+          name: Install libusb and brew
           command: |
             # sudo brew upgrade brew
             # sudo brew install libusb
             sudo apt update -q
-            sudo apt install -yq libusb-dev libusb-1.0.0-dev
+            sudo apt install -yq libusb-dev libusb-1.0.0-dev build-essential curl ruby
+            yes | ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install)" || true
+      - run:
+          name: Install nfpm, rpmbuild
+          command: |
+            export PATH="$HOME/.linuxbrew/bin:$PATH"
+            sudo make -f Makefile.tools rpmbuild-darwin sha256sum-darwin
+
       - run:
           name: Make distributables
           command: |
+            export PATH="$HOME/.linuxbrew/bin:$PATH"
             make -f Makefile.release dist-darwin
       - persist_to_workspace:
           root: .
@@ -141,6 +145,7 @@ jobs:
       - run:
           name: Install tools
           command: |
+            export PATH="$HOME/.linuxbrew/bin:$PATH"
             make -f Makefile.tools github-release
             make -f Makefile.release publish-github-darwin
 
@@ -199,3 +204,4 @@ workflows:
             # release only on tag push events like vX[.Y.Z...][-whatever]
             # tags:
             #   only: /v[0-9]+(\.[0-9]+)*(-[a-zA-Z0-9-]+)?/
+
