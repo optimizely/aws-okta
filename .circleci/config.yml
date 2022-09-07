@@ -74,25 +74,24 @@ jobs:
           root: .
           paths: ['dist/*']
 
-  publish-packagecloud:
-    docker:
-      - image: circleci/golang:1.13
-    working_directory: /go/src/github.com/optimizely/aws-okta
-    steps:
-      - checkout
-      - attach_workspace: { at: . }
-      - run:
-          name: Install tools
-          command: |
-            make -f Makefile.tools github-release
-            # this is all for package_cloud :/
-            sudo apt update -q
-            sudo apt install -yq ruby ruby-dev build-essential
-            # fixes https://askubuntu.com/questions/872399/error-failed-to-build-gem-native-extension-when-trying-to-download-rubocop
-            sudo gem install rake
-            sudo make -f Makefile.tools package_cloud
-            make -f Makefile.release publish-packagecloud
-
+  # publish-packagecloud:
+  #   docker:
+  #     - image: circleci/golang:1.13
+  #   working_directory: /go/src/github.com/optimizely/aws-okta
+  #   steps:
+  #     - checkout
+  #     - attach_workspace: { at: . }
+  #     - run:
+  #         name: Install tools
+  #         command: |
+  #           make -f Makefile.tools github-release
+  #           # this is all for package_cloud :/
+  #           sudo apt update -q
+  #           sudo apt install -yq ruby ruby-dev build-essential
+  #           # fixes https://askubuntu.com/questions/872399/error-failed-to-build-gem-native-extension-when-trying-to-download-rubocop
+  #           sudo gem install rake
+  #           sudo make -f Makefile.tools package_cloud
+  #           make -f Makefile.release publish-packagecloud
   publish-github-linux:
     docker:
       - image: circleci/golang:1.13
@@ -106,11 +105,48 @@ jobs:
             make -f Makefile.tools github-release
             make -f Makefile.release publish-github-linux
 
+# ishih - my change, add job list: dist-darwin and publish-github-darwin
+  dist-darwin:
+    docker:
+      - image: circleci/golang:1.13
+    working_directory: /go/src/github.com/optimizely/aws-okta
+    steps:
+      - checkout
+      - run:
+          name: Install nfpm, rpmbuild
+          command: |
+            sudo make -f Makefile.tools rpmbuild-darwin sha256sum-darwin
+      - run:
+          name: Install libusb
+          command: |
+            sudo brew upgrade brew
+            sudo brew install libusb
+      - run:
+          name: Make distributables
+          command: |
+            make -f Makefile.release dist-darwin
+      - persist_to_workspace:
+          root: .
+          paths: ['dist/*']
+
+  publish-github-darwin:
+    docker:
+      - image: circleci/golang:1.13
+    working_directory: /go/src/github.com/optimizely/aws-okta
+    steps:
+      - checkout
+      - attach_workspace: { at: . }
+      - run:
+          name: Install tools
+          command: |
+            make -f Makefile.tools github-release
+            make -f Makefile.release publish-github-darwin
+
 workflows:
   version: 2
   # currently we only build/publish for linux: macOS builds require non-FOSS
   # Keychain libs that require a macOS host to build on
-  # https://github.com/segmentio/aws-okta/issues/81
+  # https://github.com/optimizely/aws-okta/issues/81
   test-dist-publish-linux:
     jobs:
       - test
@@ -120,17 +156,22 @@ workflows:
           filters:
             tags:
               only: /.*/
-      - publish-packagecloud:
-          context: packagecloud
-          requires:
-            - dist-linux
+      - dist-darwin:
+          # needed to ensure dist happens on tag events
           filters:
-            # never publish from a branch event
-            branches:
-              ignore: /.*/
-            # release only on tag push events like vX[.Y.Z...][-whatever]
             tags:
-              only: /v[0-9]+(\.[0-9]+)*(-[a-zA-Z0-9-]+)?/
+              only: /.*/
+      # - publish-packagecloud:
+      #     context: packagecloud
+      #     requires:
+      #       - dist-linux
+      #     filters:
+      #       # never publish from a branch event
+      #       branches:
+      #         ignore: /.*/
+      #       # release only on tag push events like vX[.Y.Z...][-whatever]
+      #       tags:
+      #         only: /v[0-9]+(\.[0-9]+)*(-[a-zA-Z0-9-]+)?/
       - publish-github-linux:
           context: github-optimizelycircle-oss-release
           requires:
@@ -139,7 +180,21 @@ workflows:
             # never publish from a branch event
             branches:
               ignore: /.*/
-            # disabled (temporarily?) due to https://github.com/segmentio/aws-okta/issues/301
+            # disabled (temporarily?) due to https://github.com/optimizely/aws-okta/issues/301
             # release only on tag push events like vX[.Y.Z...][-whatever]
             # tags:
             #   only: /v[0-9]+(\.[0-9]+)*(-[a-zA-Z0-9-]+)?/
+      ### ishih-opti - add for dawrin
+      - publish-github-darwin:
+          context: github-optimizelycircle-oss-release
+          requires:
+            - dist-darwin
+          filters:
+            # never publish from a branch event
+            branches:
+              ignore: /.*/
+            # disabled (temporarily?) due to https://github.com/optimizely/aws-okta/issues/301
+            # release only on tag push events like vX[.Y.Z...][-whatever]
+            # tags:
+            #   only: /v[0-9]+(\.[0-9]+)*(-[a-zA-Z0-9-]+)?/
+
