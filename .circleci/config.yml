@@ -119,8 +119,10 @@ jobs:
       - run:
           name: Install libusb
           command: |
-            sudo brew upgrade brew
-            sudo brew install libusb
+            # sudo brew upgrade brew
+            # sudo brew install libusb
+            sudo apt update -q
+            sudo apt install -yq libusb-dev libusb-1.0.0-dev
       - run:
           name: Make distributables
           command: |
@@ -197,4 +199,3 @@ workflows:
             # release only on tag push events like vX[.Y.Z...][-whatever]
             # tags:
             #   only: /v[0-9]+(\.[0-9]+)*(-[a-zA-Z0-9-]+)?/
-
