@@ -113,13 +113,14 @@ dist-darwin:
   steps:
       - checkout
       - run:
-        name: install packages
-        command:  |
-          yes | ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install)" || true
-          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-          which brew
-          make -f Makefile.tools rpmbuild-darwin sha256sum-darwin
-          make -f Makefile.release dist-darwin
+          name: install packages
+          command:  |
+            yes | ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install)" || true
+            eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+            which brew
+            brew install go@1.17
+            make -f Makefile.tools rpmbuild-darwin sha256sum-darwin
+            make -f Makefile.release dist-darwin
       - persist_to_workspace:
           root: .
           paths: ['dist/*']
