@@ -123,16 +123,18 @@ jobs:
             eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
             export PATH="$HOME/.linuxbrew/bin:$PATH"
             which brew
+            sudo make -f Makefile.tools rpmbuild-darwin sha256sum-darwin
+            make -f Makefile.release dist-darwin
       - run:
           name: Install nfpm, rpmbuild
           command: |
             export PATH="$HOME/.linuxbrew/bin:$PATH"
-            sudo make -f Makefile.tools rpmbuild-darwin sha256sum-darwin
+            
       - run:
           name: Make distributables
           command: |
             export PATH="$HOME/.linuxbrew/bin:$PATH"
-            make -f Makefile.release dist-darwin
+            
       - persist_to_workspace:
           root: .
           paths: ['dist/*']
