@@ -113,7 +113,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install libusb and brew
+          name: Install libusb, brew, nfpm, rpmbuild and make distribution
           command: |
             # sudo brew upgrade brew
             # sudo brew install libusb
@@ -128,14 +128,6 @@ jobs:
             # building releases
             go get github.com/github-release/github-release
             make -f Makefile.release dist-darwin
-      - run:
-          name: Install nfpm, rpmbuild
-          command: |
-            export PATH="$HOME/.linuxbrew/bin:$PATH"
-      - run:
-          name: Make distributables
-          command: |
-            export PATH="$HOME/.linuxbrew/bin:$PATH"
             
       - persist_to_workspace:
           root: .
