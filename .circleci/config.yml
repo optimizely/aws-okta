@@ -120,6 +120,7 @@ jobs:
             sudo apt update -q
             sudo apt install -yq libusb-dev libusb-1.0.0-dev build-essential curl ruby
             yes | ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install)" || true
+            export PATH="$HOME/.linuxbrew/bin:$PATH"
       - run:
           name: Install nfpm, rpmbuild
           command: |
