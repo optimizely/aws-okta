@@ -126,6 +126,7 @@ jobs:
             # builing tools
             make -f Makefile.tools rpmbuild-darwin sha256sum-darwin
             # building releases
+            go get github.com/github-release/github-release
             make -f Makefile.release dist-darwin
       - run:
           name: Install nfpm, rpmbuild
