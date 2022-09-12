@@ -110,6 +110,7 @@ dist-darwin:
   macos:
       xcode: 12.5.1 # indicate our selected version of Xcode
       resource_class: macos.x86.metal.gen1 # dedicated host, with 24-hour billing
+  working_directory: /go/src/github.com/optimizely/aws-okta
   steps:
       - checkout
       - run:
@@ -152,19 +153,22 @@ dist-darwin:
   #         root: .
   #         paths: ['dist/*']
 
-  # publish-github-darwin:
-  #   docker:
-  #     - image: circleci/golang:1.13
-  #   working_directory: /go/src/github.com/optimizely/aws-okta
-  #   steps:
-  #     - checkout
-  #     - attach_workspace: { at: . }
-  #     - run:
-  #         name: Install tools
-  #         command: |
-  #           export PATH="$HOME/.linuxbrew/bin:$PATH"
-  #           make -f Makefile.tools github-release
-  #           make -f Makefile.release publish-github-darwin
+  publish-github-darwin:
+    # docker:
+    #   - image: circleci/golang:1.13
+    macos:
+      xcode: 12.5.1 # indicate our selected version of Xcode
+      resource_class: macos.x86.metal.gen1 # dedicated host, with 24-hour billing
+    working_directory: /go/src/github.com/optimizely/aws-okta
+    steps:
+      - checkout
+      - attach_workspace: { at: . }
+      - run:
+          name: Install tools
+          command: |
+            export PATH="$HOME/.linuxbrew/bin:$PATH"
+            make -f Makefile.tools github-release
+            make -f Makefile.release publish-github-darwin
 
 workflows:
   version: 2
