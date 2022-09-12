@@ -128,7 +128,6 @@ jobs:
           command: |
             export PATH="$HOME/.linuxbrew/bin:$PATH"
             sudo make -f Makefile.tools rpmbuild-darwin sha256sum-darwin
-
       - run:
           name: Make distributables
           command: |
