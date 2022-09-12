@@ -168,7 +168,7 @@ workflows:
       - publish-packagecloud:
           context: packagecloud
           requires:
-            - dist-linux dist-darwin
+            - dist-linux, dist-darwin
           filters:
             # never publish from a branch event
             branches:
