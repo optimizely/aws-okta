@@ -94,7 +94,7 @@ jobs:
   #           make -f Makefile.release publish-packagecloud
   publish-github-linux:
     docker:
-      - image: circleci/golang:1.13
+      - image: circleci/golang:1.17
     working_directory: /go/src/github.com/optimizely/aws-okta
     steps:
       - checkout
@@ -119,7 +119,7 @@ jobs:
               eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
               brew install go@1.17 libusb 
               export PATH=/usr/local/opt/go@1.17/bin:/usr/local/opt/coreutils/libexec/gnubin:$PATH
-              go install github.com/goreleaser/nfpm/v2/cmd/nfpm@latest
+              # go install github.com/goreleaser/nfpm/v2/cmd/nfpm@latest
               make -f Makefile.tools rpmbuild-darwin sha256sum-darwin
               make -f Makefile.release dist-darwin
         - persist_to_workspace:
