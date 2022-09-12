@@ -109,7 +109,7 @@ jobs:
   dist-darwin:
     macos:
         xcode: 12.5.1 # indicate our selected version of Xcode
-    working_directory: /go/src/github.com/optimizely/aws-okta
+    # working_directory: /go/src/github.com/optimizely/aws-okta
     steps:
         - checkout
         - run:
@@ -157,7 +157,7 @@ jobs:
     #   - image: circleci/golang:1.13
     macos:
       xcode: 12.5.1 # indicate our selected version of Xcode
-    working_directory: /go/src/github.com/optimizely/aws-okta
+    # working_directory: /go/src/github.com/optimizely/aws-okta
     steps:
       - checkout
       - attach_workspace: { at: . }
