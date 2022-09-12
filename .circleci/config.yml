@@ -120,6 +120,7 @@ jobs:
               brew install go@1.17 libusb 
               export PATH=/usr/local/opt/go@1.17/bin:/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:$PATH
               # go install github.com/goreleaser/nfpm/v2/cmd/nfpm@latest
+              go install github.com/goreleaser/nfpm/v2/cmd/nfpm@@1.20
               make -f Makefile.tools rpmbuild-darwin sha256sum-darwin
               make -f Makefile.release dist-darwin
         - persist_to_workspace:
