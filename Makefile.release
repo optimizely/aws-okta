@@ -39,7 +39,7 @@ publish-linux: publish-github-linux publish-packagecloud
 
 publish-github: publish-github-darwin publish-github-linux publish-github-sha256sums
 
-publish-github-darwin: publish-github-darwin-bin
+publish-github-darwin: publish-github-darwin-bin publish-github-darwin-bin-arm6
 
 publish-github-linux: publish-github-linux-bin publish-github-deb publish-github-rpm
 
@@ -71,7 +71,7 @@ publish-github-darwin-bin: dist/aws-okta-$(VERSION)-darwin-amd64 | github-releas
 	--replace \
 	--file $<
 
-publish-github-darwin-bin: dist/aws-okta-$(VERSION)-darwin-arm64 | github-release
+publish-github-darwin-bin-arm64: dist/aws-okta-$(VERSION)-darwin-arm64 | github-release
 	github-release upload \
 	--security-token $$GH_LOGIN \
 	--user optimizely \
@@ -175,4 +175,5 @@ dist/aws-okta_$(VERSION)_amd64.rpm: dist/nfpm-$(VERSION).yaml dist/aws-okta-$(VE
 	publish-github-deb \
 	publish-github-darwin \
 	publish-github-darwin-bin \
+	publish-github-darwin-bin-arm64 \
 	github-release
