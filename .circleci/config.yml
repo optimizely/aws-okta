@@ -118,7 +118,7 @@ jobs:
               yes | ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install)" || true
               eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
               brew install go@1.17 libusb 
-              export PATH=/usr/local/opt/go@1.17/bin:/usr/local/opt/coreutils/libexec/gnubin:$PATH
+              export PATH=/usr/local/opt/go@1.17/bin:/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:$PATH
               # go install github.com/goreleaser/nfpm/v2/cmd/nfpm@latest
               make -f Makefile.tools rpmbuild-darwin sha256sum-darwin
               make -f Makefile.release dist-darwin
