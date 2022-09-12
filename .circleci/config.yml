@@ -122,7 +122,13 @@ jobs:
               # go install github.com/goreleaser/nfpm/v2/cmd/nfpm@latest
               curl -Ls https://github.com/goreleaser/nfpm/releases/download/v1.2.0/nfpm_1.2.0_Darwin_x86_64.tar.gz > nfpm.tar.gz
               tar xzvf nfpm.tar.gz && mv nfpm /usr/local/bin
+        - run:
+            name: make tools for macos
+            command:  |
               make -f Makefile.tools rpmbuild-darwin sha256sum-darwin
+        - run:
+            name: make distribution
+            command:  |
               make -f Makefile.release dist-darwin
         - persist_to_workspace:
             root: .
@@ -145,7 +151,7 @@ workflows:
   # currently we only build/publish for linux: macOS builds require non-FOSS
   # Keychain libs that require a macOS host to build on
   # https://github.com/optimizely/aws-okta/issues/81
-  test-dist-publish-linux:
+  test-dist-publish:
     jobs:
       - test
       - test-build-golang-prev
@@ -159,17 +165,17 @@ workflows:
           filters:
             tags:
               only: /.*/
-      # - publish-packagecloud:
-      #     context: packagecloud
-      #     requires:
-      #       - dist-linux
-      #     filters:
-      #       # never publish from a branch event
-      #       branches:
-      #         ignore: /.*/
-      #       # release only on tag push events like vX[.Y.Z...][-whatever]
-      #       tags:
-      #         only: /v[0-9]+(\.[0-9]+)*(-[a-zA-Z0-9-]+)?/
+      - publish-packagecloud:
+          context: packagecloud
+          requires:
+            - dist-linux dist-darwin
+          filters:
+            # never publish from a branch event
+            branches:
+              ignore: /.*/
+            # release only on tag push events like vX[.Y.Z...][-whatever]
+            tags:
+              only: /v[0-9]+(\.[0-9]+)*(-[a-zA-Z0-9-]+)?/
       - publish-github-linux:
           context: github-optimizelycircle-oss-release
           requires:
