@@ -21,7 +21,7 @@ rpmbuild-darwin:
 	brew install rpm
 
 sha256sum-darwin:
-	brew install coreutils  
+	brew install coreutils
 	# && ln -s $$(which gsha256sum) /usr/local/bin/sha256sum
 
 github-release:

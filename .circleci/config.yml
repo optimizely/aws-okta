@@ -106,47 +106,64 @@ jobs:
             make -f Makefile.release publish-github-linux
 
 # ishih - my change, add job list: dist-darwin and publish-github-darwin
-  dist-darwin:
-    docker:
-      - image: circleci/golang:1.13
-    working_directory: /go/src/github.com/optimizely/aws-okta
-    steps:
+dist-darwin:
+  macos:
+      xcode: 12.5.1 # indicate our selected version of Xcode
+      resource_class: macos.x86.metal.gen1 # dedicated host, with 24-hour billing
+  steps:
       - checkout
       - run:
-          name: Install libusb, brew, nfpm, rpmbuild,llvm and make distribution
-          command: |
-            # sudo brew upgrade brew
-            # sudo brew install libusb
-            sudo apt update -q
-            sudo apt install -yq libusb-dev libusb-1.0.0-dev build-essential curl ruby
-            yes | ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install)" || true
-            eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-            export PATH="$HOME/.linuxbrew/bin:$PATH"
-            which brew
-            brew install llvm
-            # builing tools
-            make -f Makefile.tools rpmbuild-darwin sha256sum-darwin
-            # building releases
-            go get github.com/github-release/github-release
-            make -f Makefile.release dist-darwin
-            
+        name: install packages
+        command:  |
+          yes | ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install)" || true
+          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+          which brew
+          make -f Makefile.tools rpmbuild-darwin sha256sum-darwin
+          make -f Makefile.release dist-darwin
       - persist_to_workspace:
           root: .
           paths: ['dist/*']
+  # dist-darwin:
+  #   docker:
+  #     - image: circleci/golang:1.17
+  #   working_directory: /go/src/github.com/optimizely/aws-okta
+  #   steps:
+  #     - checkout
+  #     - run:
+  #         name: Install libusb, brew, nfpm, rpmbuild,llvm and make distribution
+  #         command: |
+  #           # sudo brew upgrade brew
+  #           # sudo brew install libusb
+  #           sudo apt update -q
+  #           sudo apt install -yq libusb-dev libusb-1.0.0-dev build-essential curl ruby
+  #           yes | ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install)" || true
+  #           eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+  #           export PATH="$HOME/.linuxbrew/bin:$PATH"
+  #           which brew
+  #           # brew install llvm
+  #           # builing tools
+  #           make -f Makefile.tools rpmbuild-darwin sha256sum-darwin
+  #           # building releases
+  #           go get github.com/github-release/github-release
+  #           make -f Makefile.release dist-darwin
+            
+  #     - persist_to_workspace:
+  #         root: .
+  #         paths: ['dist/*']
 
-  publish-github-darwin:
-    docker:
-      - image: circleci/golang:1.13
-    working_directory: /go/src/github.com/optimizely/aws-okta
-    steps:
-      - checkout
-      - attach_workspace: { at: . }
-      - run:
-          name: Install tools
-          command: |
-            export PATH="$HOME/.linuxbrew/bin:$PATH"
-            make -f Makefile.tools github-release
-            make -f Makefile.release publish-github-darwin
+  # publish-github-darwin:
+  #   docker:
+  #     - image: circleci/golang:1.13
+  #   working_directory: /go/src/github.com/optimizely/aws-okta
+  #   steps:
+  #     - checkout
+  #     - attach_workspace: { at: . }
+  #     - run:
+  #         name: Install tools
+  #         command: |
+  #           export PATH="$HOME/.linuxbrew/bin:$PATH"
+  #           make -f Makefile.tools github-release
+  #           make -f Makefile.release publish-github-darwin
 
 workflows:
   version: 2
