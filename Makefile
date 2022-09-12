@@ -22,7 +22,7 @@ dist/aws-okta-$(VERSION)-darwin-amd64: | dist/
 	GOOS=darwin GOARCH=amd64 GO111MODULE=on go build -mod=vendor $(LDFLAGS) -o $@
 
 dist/aws-okta-$(VERSION)-darwin-arm64: | dist/
-	CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 GO111MODULE=on go build -mod=vendor $(LDFLAGS) -o $@
+	GOOS=darwin GOARCH=arm64 GO111MODULE=on go build -mod=vendor $(LDFLAGS) -o $@
 
 dist/aws-okta-$(VERSION)-linux-amd64: | dist/
 	GOOS=linux GOARCH=amd64 GO111MODULE=on go build -mod=vendor $(LDFLAGS) -o $@
