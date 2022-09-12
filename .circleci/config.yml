@@ -113,7 +113,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install libusb, brew, nfpm, rpmbuild and make distribution
+          name: Install libusb, brew, nfpm, rpmbuild,llvm and make distribution
           command: |
             # sudo brew upgrade brew
             # sudo brew install libusb
@@ -123,6 +123,7 @@ jobs:
             eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
             export PATH="$HOME/.linuxbrew/bin:$PATH"
             which brew
+            brew install llvm
             # builing tools
             make -f Makefile.tools rpmbuild-darwin sha256sum-darwin
             # building releases
