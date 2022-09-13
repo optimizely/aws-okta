@@ -123,12 +123,12 @@ jobs:
               curl -Ls https://github.com/goreleaser/nfpm/releases/download/v1.2.0/nfpm_1.2.0_Darwin_x86_64.tar.gz > nfpm.tar.gz
               tar xzvf nfpm.tar.gz && mv nfpm /usr/local/bin
         - run:
-            name: make tools for macos
+            name: make tools for macos and distribution
             command:  |
               make -f Makefile.tools rpmbuild-darwin sha256sum-darwin
-        - run:
-            name: make distribution
-            command:  |
+        # - run:
+        #     name: make distribution
+        #     command:  |
               make -f Makefile.release dist-darwin
         - persist_to_workspace:
             root: .
