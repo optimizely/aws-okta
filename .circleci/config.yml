@@ -50,7 +50,6 @@ jobs:
               git status
               exit 1
             fi
-
   dist-linux:
     docker:
       - image: circleci/golang:1.13
@@ -123,7 +122,7 @@ jobs:
               curl -Ls https://github.com/goreleaser/nfpm/releases/download/v1.2.0/nfpm_1.2.0_Darwin_x86_64.tar.gz > nfpm.tar.gz
               tar xzvf nfpm.tar.gz && mv nfpm /usr/local/bin
         - run:
-            name: make tools for macos and distribution
+            name: make tools for macos 
             command:  |
               export PATH=/usr/local/opt/go@1.17/bin:/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:$PATH
               make -f Makefile.tools rpmbuild-darwin sha256sum-darwin
@@ -145,6 +144,7 @@ jobs:
           name: Install tools
           command: |
             echo "======  publish-github-darwin ====="
+            export PATH=/usr/local/opt/go@1.17/bin:/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:$PATH
             make -f Makefile.tools github-release
             make -f Makefile.release publish-github-darwin
 

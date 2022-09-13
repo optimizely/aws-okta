@@ -130,18 +130,18 @@ packagecloud.conf.json:
 publish-packagecloud-deb: dist/aws-okta_$(VERSION)_amd64.deb packagecloud.conf.json
 	@set -o pipefail; \
 	for v in $(PACKAGECLOUD_DEB_DISTROS); do \
-		(package_cloud yank --config packagecloud.conf.json segment/aws-okta$(PACKAGECLOUD_NAME_SUFFIX)/$$v aws-okta_$(VERSION_NO_V)_amd64.deb || true) | \
+		(package_cloud yank --config packagecloud.conf.json optimizely/aws-okta$(PACKAGECLOUD_NAME_SUFFIX)/$$v aws-okta_$(VERSION_NO_V)_amd64.deb || true) | \
 			grep -v 'with token:' || true ; \
-		package_cloud push --config packagecloud.conf.json segment/aws-okta$(PACKAGECLOUD_NAME_SUFFIX)/$$v $< | \
+		package_cloud push --config packagecloud.conf.json optimizely/aws-okta$(PACKAGECLOUD_NAME_SUFFIX)/$$v $< | \
 			grep -v 'with token:' ; \
 	done
 
 publish-packagecloud-rpm: dist/aws-okta_$(VERSION)_amd64.rpm packagecloud.conf.json
 	@set -o pipefail; \
 	for v in $(PACKAGECLOUD_RPM_DISTROS); do \
-		(package_cloud yank --config packagecloud.conf.json segment/aws-okta$(PACKAGECLOUD_NAME_SUFFIX)/$$v aws-okta-$(subst -,_,$(VERSION_NO_V))-1.x86_64.rpm || true) | \
+		(package_cloud yank --config packagecloud.conf.json optimizely/aws-okta$(PACKAGECLOUD_NAME_SUFFIX)/$$v aws-okta-$(subst -,_,$(VERSION_NO_V))-1.x86_64.rpm || true) | \
 			grep -v 'with token:' || true ; \
-		package_cloud push --config packagecloud.conf.json segment/aws-okta$(PACKAGECLOUD_NAME_SUFFIX)/$$v $< | \
+		package_cloud push --config packagecloud.conf.json optimizely/aws-okta$(PACKAGECLOUD_NAME_SUFFIX)/$$v $< | \
 			grep -v 'with token:' ; \
 	done
 
