@@ -165,17 +165,18 @@ workflows:
           filters:
             tags:
               only: /.*/
-      # - publish-packagecloud:
-      #     context: packagecloud
-      #     requires:
-      #       - dist-linux, dist-darwin
-      #     filters:
-      #       # never publish from a branch event
-      #       branches:
-      #         ignore: /.*/
-      #       # release only on tag push events like vX[.Y.Z...][-whatever]
-      #       tags:
-      #         only: /v[0-9]+(\.[0-9]+)*(-[a-zA-Z0-9-]+)?/
+      - publish-packagecloud:
+          context: packagecloud
+          requires:
+            - dist-linux
+            - dist-darwin
+          filters:
+            # never publish from a branch event
+            branches:
+              ignore: /.*/
+            # release only on tag push events like vX[.Y.Z...][-whatever]
+            tags:
+              only: /v[0-9]+(\.[0-9]+)*(-[a-zA-Z0-9-]+)?/
       - publish-github-linux:
           context: github-optimizelycircle-oss-release
           requires:
