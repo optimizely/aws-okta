@@ -2,10 +2,8 @@
 #
 # These are fragile, non-portable, and often require root
 #
-#NFPM_VERSION := 0.9.3
 NFPM_VERSION := 1.2.0
-#from https://github.com/goreleaser/nfpm/releases/download/v0.9.3/nfpm_0.9.3_checksums.txt
-# NFPM_SHA256 := f875ac060a30ec5c164e5444a7278322b276707493fa0ced6bfdd56640f0a6ea
+#from https://github.com/goreleaser/nfpm/releases/download/v1.2.0/nfpm_1.2.0_checksums.txt
 NFPM_SHA256 := 4659e714cc3d1fc1fa3ba75bb531901b0d2a89e5f59171145fb89bf1d392cb29
 
 nfpm-debian:
