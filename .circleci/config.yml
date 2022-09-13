@@ -125,10 +125,12 @@ jobs:
         - run:
             name: make tools for macos and distribution
             command:  |
+              export PATH=/usr/local/opt/go@1.17/bin:/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:$PATH
               make -f Makefile.tools rpmbuild-darwin sha256sum-darwin
-        # - run:
-        #     name: make distribution
-        #     command:  |
+        - run:
+            name: make distribution
+            command:  |
+              export PATH=/usr/local/opt/go@1.17/bin:/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:$PATH
               make -f Makefile.release dist-darwin
         - persist_to_workspace:
             root: .
