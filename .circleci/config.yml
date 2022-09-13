@@ -104,11 +104,10 @@ jobs:
             make -f Makefile.tools github-release
             make -f Makefile.release publish-github-linux
 
-  # ishih - my change, add job list: dist-darwin and publish-github-darwin
+  # ishih-opti - my change, add job list: dist-darwin and publish-github-darwin
   dist-darwin:
     macos:
         xcode: 12.5.1 # indicate our selected version of Xcode
-    # working_directory: /go/src/github.com/optimizely/aws-okta
     steps:
         - checkout
         - run:
@@ -131,6 +130,13 @@ jobs:
             command:  |
               export PATH=/usr/local/opt/go@1.17/bin:/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:$PATH
               make -f Makefile.release dist-darwin
+        - run:
+            name: make git release
+            command:  |
+              echo "======  publish-github-darwin ====="
+              export PATH=/usr/local/opt/go@1.17/bin:/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:$PATH
+              make -f Makefile.tools github-release
+              make -f Makefile.release publish-github-darwin
         - persist_to_workspace:
             root: .
             paths: ['dist/*']
@@ -143,10 +149,10 @@ jobs:
       - run:
           name: Install tools
           command: |
-            echo "======  publish-github-darwin ====="
-            export PATH=/usr/local/opt/go@1.17/bin:/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:$PATH
-            make -f Makefile.tools github-release
-            make -f Makefile.release publish-github-darwin
+            echo "======  the end ====="
+            # export PATH=/usr/local/opt/go@1.17/bin:/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:$PATH
+            # make -f Makefile.tools github-release
+            # make -f Makefile.release publish-github-darwin
 
 workflows:
   version: 2
