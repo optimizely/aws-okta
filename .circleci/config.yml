@@ -17,39 +17,39 @@ jobs:
             go build -mod=vendor
             ./aws-okta version
 
-  # test:
-  #   docker:
-  #     - image: circleci/golang:1.13
-  #   working_directory: /go/src/github.com/optimizely/aws-okta
-  #   steps:
-  #     - run:
-  #         # Do this prior to checkout so that it doesn't modify go.mod file.
-  #         name: Install modvendor
-  #         command: |
-  #           go get -u github.com/goware/modvendor
-  #     - checkout
-  #     - run:
-  #         name: Install linux dependencies - libusb
-  #         command: |
-  #           sudo apt update -q
-  #           sudo apt install -yq libusb-dev libusb-1.0.0-dev
-  #     - run:
-  #         name: Test
-  #         command: |
-  #           make test
-  #     - run:
-  #         name: Check modules are tidy and checked in
-  #         command: |
-  #           export GO111MODULE=on
-  #           go mod tidy
-  #           go mod vendor
-  #           modvendor -copy="**/*.c **/*.h" -v
-  #           if [ "$(git status --porcelain)" != "" ]; then
-  #             echo "git tree is dirty after tidying and vendoring modules"
-  #             echo "ensure go.mod and go.sum are tidy and vendor is checked in"
-  #             git status
-  #             exit 1
-  #           fi
+  test:
+    docker:
+      - image: circleci/golang:1.13
+    working_directory: /go/src/github.com/optimizely/aws-okta
+    steps:
+      - run:
+          # Do this prior to checkout so that it doesn't modify go.mod file.
+          name: Install modvendor
+          command: |
+            go get -u github.com/goware/modvendor
+      - checkout
+      - run:
+          name: Install linux dependencies - libusb
+          command: |
+            sudo apt update -q
+            sudo apt install -yq libusb-dev libusb-1.0.0-dev
+      - run:
+          name: Test
+          command: |
+            make test
+      - run:
+          name: Check modules are tidy and checked in
+          command: |
+            export GO111MODULE=on
+            go mod tidy
+            go mod vendor
+            modvendor -copy="**/*.c **/*.h" -v
+            if [ "$(git status --porcelain)" != "" ]; then
+              echo "git tree is dirty after tidying and vendoring modules"
+              echo "ensure go.mod and go.sum are tidy and vendor is checked in"
+              git status
+              exit 1
+            fi
   dist-linux:
     docker:
       - image: circleci/golang:1.13
