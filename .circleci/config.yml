@@ -20,7 +20,7 @@ jobs:
   test:
     docker:
       - image: circleci/golang:1.13
-    working_directory: /go/src/github.com/optimizely/aws-okta
+    working_directory: /go/src/github.com/segmentio/aws-okta
     steps:
       - run:
           # Do this prior to checkout so that it doesn't modify go.mod file.
@@ -50,10 +50,11 @@ jobs:
               git status
               exit 1
             fi
+
   dist-linux:
     docker:
       - image: circleci/golang:1.13
-    working_directory: /go/src/github.com/optimizely/aws-okta
+    working_directory: /go/src/github.com/segmentio/aws-okta
     steps:
       - checkout
       - run:
@@ -76,7 +77,7 @@ jobs:
   publish-packagecloud:
     docker:
       - image: circleci/golang:1.13
-    working_directory: /go/src/github.com/optimizely/aws-okta
+    working_directory: /go/src/github.com/segmentio/aws-okta
     steps:
       - checkout
       - attach_workspace: { at: . }
@@ -91,10 +92,11 @@ jobs:
             sudo gem install rake
             sudo make -f Makefile.tools package_cloud
             make -f Makefile.release publish-packagecloud
+
   publish-github-linux:
     docker:
-      - image: circleci/golang:1.17
-    working_directory: /go/src/github.com/optimizely/aws-okta
+      - image: circleci/golang:1.13
+    working_directory: /go/src/github.com/segmentio/aws-okta
     steps:
       - checkout
       - attach_workspace: { at: . }
@@ -104,62 +106,12 @@ jobs:
             make -f Makefile.tools github-release
             make -f Makefile.release publish-github-linux
 
-  # ishih-opti - my change, add job list: dist-darwin and publish-github-darwin
-  dist-darwin:
-    macos:
-        xcode: 12.5.1 # indicate our selected version of Xcode
-    steps:
-        - checkout
-        - run:
-            name: install packages
-            command:  |
-              yes | ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install)" || true
-              eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-              brew install go@1.17 libusb 
-              export PATH=/usr/local/opt/go@1.17/bin:/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:$PATH
-              # go install github.com/goreleaser/nfpm/v2/cmd/nfpm@latest
-              curl -Ls https://github.com/goreleaser/nfpm/releases/download/v1.2.0/nfpm_1.2.0_Darwin_x86_64.tar.gz > nfpm.tar.gz
-              tar xzvf nfpm.tar.gz && mv nfpm /usr/local/bin
-        - run:
-            name: make tools for macos 
-            command:  |
-              export PATH=/usr/local/opt/go@1.17/bin:/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:$PATH
-              make -f Makefile.tools rpmbuild-darwin sha256sum-darwin
-        - run:
-            name: make distribution
-            command:  |
-              export PATH=/usr/local/opt/go@1.17/bin:/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:$PATH
-              make -f Makefile.release dist-darwin
-        - run:
-            name: make git release
-            command:  |
-              echo "======  publish-github-darwin ====="
-              export PATH=/usr/local/opt/go@1.17/bin:/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:$PATH
-              make -f Makefile.tools github-release
-              make -f Makefile.release publish-github-darwin
-        - persist_to_workspace:
-            root: .
-            paths: ['dist/*']
-  publish-github-darwin:
-    macos:
-      xcode: 12.5.1 # indicate our selected version of Xcode
-    steps:
-      - checkout
-      - attach_workspace: { at: . }
-      - run:
-          name: Install tools
-          command: |
-            echo "======  the end ====="
-            # export PATH=/usr/local/opt/go@1.17/bin:/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:$PATH
-            # make -f Makefile.tools github-release
-            # make -f Makefile.release publish-github-darwin
-
 workflows:
   version: 2
   # currently we only build/publish for linux: macOS builds require non-FOSS
   # Keychain libs that require a macOS host to build on
-  # https://github.com/optimizely/aws-okta/issues/81
-  test-dist-publish:
+  # https://github.com/segmentio/aws-okta/issues/81
+  test-dist-publish-linux:
     jobs:
       - test
       - test-build-golang-prev
@@ -168,16 +120,10 @@ workflows:
           filters:
             tags:
               only: /.*/
-      - dist-darwin:
-          # needed to ensure dist happens on tag events
-          filters:
-            tags:
-              only: /.*/
       - publish-packagecloud:
           context: packagecloud
           requires:
             - dist-linux
-            - dist-darwin
           filters:
             # never publish from a branch event
             branches:
@@ -186,28 +132,14 @@ workflows:
             tags:
               only: /v[0-9]+(\.[0-9]+)*(-[a-zA-Z0-9-]+)?/
       - publish-github-linux:
-          context: github-optimizelycircle-oss-release
+          context: github-segmentcircle-oss-release
           requires:
             - dist-linux
           filters:
             # never publish from a branch event
             branches:
               ignore: /.*/
-            # disabled (temporarily?) due to https://github.com/optimizely/aws-okta/issues/301
+            # disabled (temporarily?) due to https://github.com/segmentio/aws-okta/issues/301
             # release only on tag push events like vX[.Y.Z...][-whatever]
             # tags:
             #   only: /v[0-9]+(\.[0-9]+)*(-[a-zA-Z0-9-]+)?/
-      ### ishih-opti - add for dawrin
-      - publish-github-darwin:
-          context: github-optimizelycircle-oss-release
-          requires:
-            - dist-darwin
-          filters:
-            # never publish from a branch event
-            branches:
-              ignore: /.*/
-            # disabled (temporarily?) due to https://github.com/optimizely/aws-okta/issues/301
-            # release only on tag push events like vX[.Y.Z...][-whatever]
-            # tags:
-            #   only: /v[0-9]+(\.[0-9]+)*(-[a-zA-Z0-9-]+)?/
-
