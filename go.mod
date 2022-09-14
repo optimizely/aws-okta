@@ -1,4 +1,4 @@
-module github.com/optimizely/aws-okta
+module github.com/segmentio/aws-okta
 
 require (
 	github.com/99designs/keyring v1.1.6
@@ -32,4 +32,4 @@ require (
 	gopkg.in/ini.v1 v1.42.0
 )
 
-go 1.17
+go 1.13
