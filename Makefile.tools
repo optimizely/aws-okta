@@ -25,6 +25,7 @@ sha256sum-darwin:
 	# && ln -s $$(which gsha256sum) /usr/local/bin/sha256sum
 
 github-release:
+    export GOPATH=/usr/local/bin && \
 	GO111MODULE=off go get -d github.com/aktau/github-release
 
 package_cloud:
