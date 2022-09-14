@@ -137,7 +137,6 @@ jobs:
             command:  |
               echo "======  publish-github-darwin ====="
               export PATH=/usr/local/opt/go@1.17/bin:/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:$PATH
-              echo ${GOPATH}
               make -f Makefile.tools github-release
               make -f Makefile.release publish-github-darwin
         - persist_to_workspace:
