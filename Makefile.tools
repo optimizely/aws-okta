@@ -25,7 +25,8 @@ sha256sum-darwin:
 	# && ln -s $$(which gsha256sum) /usr/local/bin/sha256sum
 
 github-release:
-	GO111MODULE=off go get -d github.com/aktau/github-release
+	GO111MODULE=off go get -d github.com/aktau/github-release && \
+	mv github-release /usr/local/bin
 
 package_cloud:
 	gem install package_cloud
