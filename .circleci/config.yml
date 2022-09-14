@@ -117,7 +117,6 @@ jobs:
               eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
               brew install go@1.17 libusb 
               export PATH=/usr/local/opt/go@1.17/bin:/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:$PATH
-              # go install github.com/goreleaser/nfpm/v2/cmd/nfpm@latest
               curl -Ls https://github.com/goreleaser/nfpm/releases/download/v1.2.0/nfpm_1.2.0_Darwin_x86_64.tar.gz > nfpm.tar.gz
               tar xzvf nfpm.tar.gz && mv nfpm /usr/local/bin
         - run:
