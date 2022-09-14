@@ -26,6 +26,7 @@ sha256sum-darwin:
 
 github-release:
 	GO111MODULE=off go get -d github.com/aktau/github-release && \
+	which github-release && \
 	mv github-release /usr/local/bin
 
 package_cloud:
