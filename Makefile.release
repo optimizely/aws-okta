@@ -55,7 +55,7 @@ github-release:
 	--tag $(VERSION) \
 	--description - \
 	--name $(VERSION) || \
-	github-release info \
+	github-release info -u optimizely -r aws-okta\
 	--security-token $$GH_LOGIN \
 	--user optimizely \
 	--repo aws-okta \
