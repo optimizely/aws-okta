@@ -26,7 +26,7 @@ sha256sum-darwin:
 
 github-release:
     export GOPATH=/usr/local/bin && \
-	GO111MODULE=off go get -d github.com/aktau/github-release
+	GO111MODULE=off go install github.com/aktau/github-release 
 
 package_cloud:
 	gem install package_cloud
