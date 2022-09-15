@@ -7,7 +7,6 @@ include Makefile
 
 # use bash so we can use set -o pipefail
 SHELL := /bin/bash
-
 # set --pre-release if not tagged or tree is dirty or there's a `-` in the tag
 ifneq (,$(findstring -,$(VERSION)))
 	GITHUB_RELEASE_FLAGS := "--pre-release"
