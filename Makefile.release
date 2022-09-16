@@ -8,10 +8,10 @@ include Makefile
 # use bash so we can use set -o pipefail
 SHELL := /bin/bash
 # set --pre-release if not tagged or tree is dirty or there's a `-` in the tag
-ifneq (,$(findstring -,$(VERSION)))
-	GITHUB_RELEASE_FLAGS := "--pre-release"
-	PACKAGECLOUD_NAME_SUFFIX := "-prerelease"
-endif
+#ifneq (,$(findstring -,$(VERSION)))
+#	GITHUB_RELEASE_FLAGS := "--pre-release"
+#	PACKAGECLOUD_NAME_SUFFIX := "-prerelease"
+#endif
 
 # TODO: use this consistently; 99% of the time, we don't want a v
 VERSION_NO_V := $(patsubst v%,%,$(VERSION))
