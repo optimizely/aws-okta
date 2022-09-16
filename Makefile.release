@@ -47,22 +47,17 @@ publish-packagecloud: publish-packagecloud-deb publish-packagecloud-rpm
 github-release:
 	set -o pipefail; \
 	scripts/changelog | github-release release \
-	--security-token $$GH_LOGIN \
+	--security-token $$GITHUB_TOKEN \
 	--user optimizely \
 	--repo aws-okta \
 	$(GITHUB_RELEASE_FLAGS) \
 	--tag $(VERSION) \
 	--description - \
-	--name $(VERSION) || \
-	github-release info -u optimizely -r aws-okta\
-	--security-token $$GH_LOGIN \
-	--user optimizely \
-	--repo aws-okta \
-	--tag $(VERSION)
+	--name $(VERSION) \
 
 publish-github-darwin-bin: dist/aws-okta-$(VERSION)-darwin-amd64 | github-release
 	github-release upload \
-	--security-token $$GH_LOGIN \
+	--security-token $$GITHUB_TOKEN \
 	--user optimizely \
 	--repo aws-okta \
 	--tag $(VERSION) \
@@ -72,7 +67,7 @@ publish-github-darwin-bin: dist/aws-okta-$(VERSION)-darwin-amd64 | github-releas
 
 publish-github-darwin-bin-arm64: dist/aws-okta-$(VERSION)-darwin-arm64 | github-release
 	github-release upload \
-	--security-token $$GH_LOGIN \
+	--security-token $$GITHUB_TOKEN \
 	--user optimizely \
 	--repo aws-okta \
 	--tag $(VERSION) \
@@ -82,7 +77,7 @@ publish-github-darwin-bin-arm64: dist/aws-okta-$(VERSION)-darwin-arm64 | github-
 
 publish-github-linux-bin: dist/aws-okta-$(VERSION)-linux-amd64 | github-release
 	github-release upload \
-	--security-token $$GH_LOGIN \
+	--security-token $$GITHUB_TOKEN \
 	--user optimizely \
 	--repo aws-okta \
 	--tag $(VERSION) \
@@ -92,7 +87,7 @@ publish-github-linux-bin: dist/aws-okta-$(VERSION)-linux-amd64 | github-release
 
 publish-github-deb: dist/aws-okta_$(VERSION)_amd64.deb | github-release
 	github-release upload \
-	--security-token $$GH_LOGIN \
+	--security-token $$GITHUB_TOKEN \
 	--user optimizely \
 	--repo aws-okta \
 	--tag $(VERSION) \
@@ -102,7 +97,7 @@ publish-github-deb: dist/aws-okta_$(VERSION)_amd64.deb | github-release
 
 publish-github-rpm: dist/aws-okta_$(VERSION)_amd64.rpm | github-release
 	github-release upload \
-	--security-token $$GH_LOGIN \
+	--security-token $$GITHUB_TOKEN \
 	--user optimizely \
 	--repo aws-okta \
 	--tag $(VERSION) \
@@ -112,7 +107,7 @@ publish-github-rpm: dist/aws-okta_$(VERSION)_amd64.rpm | github-release
 	
 publish-github-sha256sums: dist/aws-okta-$(VERSION).sha256sums | github-release
 	github-release upload \
-	--security-token $$GH_LOGIN \
+	--security-token $$GITHUB_TOKEN \
 	--user optimizely \
 	--repo aws-okta \
 	--tag $(VERSION) \
