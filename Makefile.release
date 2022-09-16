@@ -44,10 +44,11 @@ publish-github-linux: publish-github-linux-bin publish-github-deb publish-github
 
 publish-packagecloud: publish-packagecloud-deb publish-packagecloud-rpm
 
+# 	scripts/changelog | github-release release \
 github-release:
 	set -o pipefail; \
-	scripts/changelog | github-release release \
 	--security-token $$GITHUB_TOKEN \
+	"test"| github-release release \
 	--user optimizely \
 	--repo aws-okta \
 	$(GITHUB_RELEASE_FLAGS) \
