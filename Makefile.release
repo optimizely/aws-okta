@@ -47,6 +47,7 @@ publish-packagecloud: publish-packagecloud-deb publish-packagecloud-rpm
 # 	scripts/changelog | github-release release \
 github-release:
 	set -o pipefail; \
+	github-release release \
 	--security-token $$GITHUB_TOKEN \
 	"test"| github-release release \
 	--user optimizely \
