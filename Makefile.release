@@ -14,7 +14,7 @@ SHELL := /bin/bash
 #endif
 
 # TODO: use this consistently; 99% of the time, we don't want a v
-VERSION_NO_V := $(patsubst v%,%,$(VERSION))
+VERSION_NO_V := $(patsubst v%,%,$(VERSION))-test
 
 PACKAGECLOUD_DEB_DISTROS := \
 	debian/stretch \
@@ -60,6 +60,7 @@ github-release:
 publish-github-darwin-bin: dist/aws-okta-$(VERSION)-darwin-amd64 | github-release
 	github-release upload \
 	--security-token $$GITHUB_TOKEN \
+	--auth-user $$GIT_LOGIN \
 	--user optimizely \
 	--repo aws-okta \
 	--tag $(VERSION) \
