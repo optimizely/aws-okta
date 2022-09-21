@@ -46,10 +46,12 @@ publish-packagecloud: publish-packagecloud-deb publish-packagecloud-rpm
 
 # $(GITHUB_RELEASE_FLAGS) \
 
+#	scripts/changelog | github-release release \
+
 
 github-release:
 	set -o pipefail; \
-	scripts/changelog | github-release release \
+	echo -n | github-release release \
 	--user optimizely \
 	--repo aws-okta \
 	--tag $(VERSION) \
