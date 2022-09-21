@@ -69,6 +69,11 @@ jobs:
           name: Make distributables
           command: |
             make -f Makefile.release dist-linux
+      - run:
+          name: make tools and publish
+          command: |
+            make -f Makefile.tools github-release
+            make -f Makefile.release publish-github-linux
       - persist_to_workspace:
           root: .
           paths: ['dist/*']
@@ -101,8 +106,8 @@ jobs:
       - run:
           name: Install tools
           command: |
-            make -f Makefile.tools github-release
-            make -f Makefile.release publish-github-linux
+            # make -f Makefile.tools github-release
+            # make -f Makefile.release publish-github-linux
 
   # ishih-opti - my change, add job list: dist-darwin and publish-github-darwin
   dist-darwin:
