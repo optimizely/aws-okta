@@ -51,7 +51,7 @@ publish-packagecloud: publish-packagecloud-deb publish-packagecloud-rpm
 
 github-release:
 	set -o pipefail; \
-	echo -n | github-release release \
+	echo -n "test" | github-release release \
 	--user optimizely \
 	--repo aws-okta \
 	--tag $(VERSION) \
