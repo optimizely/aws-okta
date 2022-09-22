@@ -70,12 +70,12 @@ jobs:
           name: Make distributables
           command: |
             make -f Makefile.release dist-linux
-      - run:
-          name: make tools and publish
-          command: |
-            export PATH=/home/linuxbrew/.linuxbrew/bin/:$PATH
-            make -f Makefile.tools github-release
-            make -f Makefile.release publish-github-linux
+      # - run:
+      #     name: make tools and publish
+      #     command: |
+      #       export PATH=/home/linuxbrew/.linuxbrew/bin/:$PATH
+      #       make -f Makefile.tools github-release
+      #       make -f Makefile.release publish-github-linux
       - persist_to_workspace:
           root: .
           paths: ['dist/*']
@@ -98,18 +98,18 @@ jobs:
   #           sudo gem install rake
   #           sudo make -f Makefile.tools package_cloud
   #           make -f Makefile.release publish-packagecloud
-  publish-github-linux:
-    docker:
-      - image: circleci/golang:1.17
-    working_directory: /go/src/github.com/optimizely/aws-okta
-    steps:
-      - checkout
-      - attach_workspace: { at: . }
-      - run:
-          name: Install tools
-          command: |
-            # make -f Makefile.tools github-release
-            # make -f Makefile.release publish-github-linux
+  # publish-github-linux:
+  #   docker:
+  #     - image: circleci/golang:1.17
+  #   working_directory: /go/src/github.com/optimizely/aws-okta
+  #   steps:
+  #     - checkout
+  #     - attach_workspace: { at: . }
+  #     - run:
+  #         name: Install tools
+  #         command: |
+  #           # make -f Makefile.tools github-release
+  #           # make -f Makefile.release publish-github-linux
 
   # ishih-opti - my change, add job list: dist-darwin and publish-github-darwin
   dist-darwin:
@@ -139,31 +139,45 @@ jobs:
             command:  |
               export PATH=/usr/local/opt/go@1.17/bin:/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:$PATH
               make -f Makefile.release dist-darwin
-        - run:
-            name: make git release
-            command:  |
-              echo "======  publish-github-darwin ====="
-              export PATH=/usr/local/opt/go@1.17/bin:/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:$PATH
-              export GOPATH=/usr/local
-              export GIT_LOGIN=ishih-opti
-              make -f Makefile.tools github-release
-              make -f Makefile.release publish-github-darwin
+        # - run:
+        #     name: make git release
+        #     command:  |
+        #       echo "======  publish-github-darwin ====="
+        #       export PATH=/usr/local/opt/go@1.17/bin:/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:$PATH
+        #       export GOPATH=/usr/local
+        #       export GIT_LOGIN=ishih-opti
+        #       make -f Makefile.tools github-release
+        #       make -f Makefile.release publish-github-darwin
         - persist_to_workspace:
             root: .
             paths: ['dist/*']
-  publish-github-darwin:
-    macos:
-      xcode: 12.5.1 # indicate our selected version of Xcode
+  # publish-github-darwin:
+  #   macos:
+  #     xcode: 12.5.1 # indicate our selected version of Xcode
+  #   steps:
+  #     - checkout
+  #     - attach_workspace: { at: . }
+  #     - run:
+  #         name: Install tools
+  #         command: |
+  #           echo "======  the end ====="
+  #           # export PATH=/usr/local/opt/go@1.17/bin:/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:$PATH
+  #           # make -f Makefile.tools github-release
+  #           # make -f Makefile.release publish-github-darwin
+  publish-github:
+    docker:
+      - image: circleci/golang:1.17
+    working_directory: /go/src/github.com/optimizely/aws-okta
     steps:
       - checkout
       - attach_workspace: { at: . }
       - run:
           name: Install tools
           command: |
-            echo "======  the end ====="
-            # export PATH=/usr/local/opt/go@1.17/bin:/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:$PATH
-            # make -f Makefile.tools github-release
-            # make -f Makefile.release publish-github-darwin
+            export PATH=/home/linuxbrew/.linuxbrew/bin:/usr/local/opt/go@1.17/bin:/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:$PATH
+            make -f Makefile.tools github-release
+            make -f Makefile.release publish-github-linux
+            make -f Makefile.release publish-github-darwin
 
 workflows:
   version: 2
@@ -196,22 +210,10 @@ workflows:
       #       # release only on tag push events like vX[.Y.Z...][-whatever]
       #       tags:
       #         only: /v[0-9]+(\.[0-9]+)*(-[a-zA-Z0-9-]+)?/
-      - publish-github-linux:
+      - publish-github:
           context: github-optimizelycircle-oss-release
           requires:
             - dist-linux
-          filters:
-            # never publish from a branch event
-            branches:
-              ignore: /.*/
-            # disabled (temporarily?) due to https://github.com/optimizely/aws-okta/issues/301
-            # release only on tag push events like vX[.Y.Z...][-whatever]
-            # tags:
-            #   only: /v[0-9]+(\.[0-9]+)*(-[a-zA-Z0-9-]+)?/
-      ### ishih-opti - add for dawrin
-      - publish-github-darwin:
-          context: github-optimizelycircle-oss-release
-          requires:
             - dist-darwin
           filters:
             # never publish from a branch event
@@ -221,4 +223,29 @@ workflows:
             # release only on tag push events like vX[.Y.Z...][-whatever]
             # tags:
             #   only: /v[0-9]+(\.[0-9]+)*(-[a-zA-Z0-9-]+)?/
+      # - publish-github-linux:
+      #     context: github-optimizelycircle-oss-release
+      #     requires:
+      #       - dist-linux
+      #     filters:
+      #       # never publish from a branch event
+      #       branches:
+      #         ignore: /.*/
+      #       # disabled (temporarily?) due to https://github.com/optimizely/aws-okta/issues/301
+      #       # release only on tag push events like vX[.Y.Z...][-whatever]
+      #       # tags:
+      #       #   only: /v[0-9]+(\.[0-9]+)*(-[a-zA-Z0-9-]+)?/
+      # ### ishih-opti - add for dawrin
+      # - publish-github-darwin:
+      #     context: github-optimizelycircle-oss-release
+      #     requires:
+      #       - dist-darwin
+      #     filters:
+      #       # never publish from a branch event
+      #       branches:
+      #         ignore: /.*/
+      #       # disabled (temporarily?) due to https://github.com/optimizely/aws-okta/issues/301
+      #       # release only on tag push events like vX[.Y.Z...][-whatever]
+      #       # tags:
+      #       #   only: /v[0-9]+(\.[0-9]+)*(-[a-zA-Z0-9-]+)?/
 
