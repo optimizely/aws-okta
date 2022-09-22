@@ -73,6 +73,7 @@ jobs:
       - run:
           name: make tools and publish
           command: |
+            export PATH=/home/linuxbrew/.linuxbrew/bin/:$PATH
             make -f Makefile.tools github-release
             make -f Makefile.release publish-github-linux
       - persist_to_workspace:
