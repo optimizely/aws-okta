@@ -5,7 +5,7 @@
 NFPM_VERSION := 1.2.0
 #from https://github.com/goreleaser/nfpm/releases/download/v0.9.3/nfpm_1.2.0_checksums.txt
 NFPM_SHA256 := 4659e714cc3d1fc1fa3ba75bb531901b0d2a89e5f59171145fb89bf1d392cb29
-OS = $(shell uname -s)
+
 nfpm-debian:
 	cd /tmp && \
 		curl -Ls https://github.com/goreleaser/nfpm/releases/download/v${NFPM_VERSION}/nfpm_${NFPM_VERSION}_Linux_x86_64.tar.gz > nfpm.tar.gz && \
@@ -25,7 +25,7 @@ sha256sum-darwin:
 	# && ln -s $$(which gsha256sum) /usr/local/bin/sha256sum
 
 github-release:
-	#GO111MODULE=off go install github.com/aktau/github-release
+	#GO111MODULE=off go install github.com/aktau/github-release@latest
 	brew install github-release
  
 package_cloud:

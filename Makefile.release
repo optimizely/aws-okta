@@ -14,7 +14,7 @@ SHELL := /bin/bash
 #endif
 
 # TODO: use this consistently; 99% of the time, we don't want a v
-VERSION_NO_V := $(patsubst v%,%,$(VERSION))
+VERSION_NO_V := $(patsubst v%,%,$(VERSION))-test
 
 PACKAGECLOUD_DEB_DISTROS := \
 	debian/stretch \
@@ -44,18 +44,24 @@ publish-github-linux: publish-github-linux-bin publish-github-deb publish-github
 
 publish-packagecloud: publish-packagecloud-deb publish-packagecloud-rpm
 
+# $(GITHUB_RELEASE_FLAGS) \
+
+#	scripts/changelog | github-release release \
+
+
 github-release:
 	set -o pipefail; \
-	scripts/changelog | github-release release \
+	echo -n | github-release release \
 	--user optimizely \
 	--repo aws-okta \
-	$(GITHUB_RELEASE_FLAGS) \
 	--tag $(VERSION) \
 	--description - \
-	--name $(VERSION) 
+	--name $(VERSION) \
+	--pre-release
 
 publish-github-darwin-bin: dist/aws-okta-$(VERSION)-darwin-amd64 | github-release
 	github-release upload \
+	--auth-user $$GIT_LOGIN \
 	--user optimizely \
 	--repo aws-okta \
 	--tag $(VERSION) \
