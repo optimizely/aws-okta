@@ -164,7 +164,7 @@ jobs:
   #           # export PATH=/usr/local/opt/go@1.17/bin:/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:$PATH
   #           # make -f Makefile.tools github-release
   #           # make -f Makefile.release publish-github-darwin
-  publish-github:
+  release-github:
     docker:
       - image: circleci/golang:1.17
     working_directory: /go/src/github.com/optimizely/aws-okta
@@ -215,7 +215,7 @@ workflows:
           requires:
             - dist-linux
             - dist-darwin
-            - publish-github
+            - release-github
           filters:
             # never publish from a branch event
             branches:
