@@ -44,16 +44,12 @@ publish-github-linux: publish-github-linux-bin publish-github-deb publish-github
 
 publish-packagecloud: publish-packagecloud-deb publish-packagecloud-rpm
 
-# $(GITHUB_RELEASE_FLAGS) \
-
-#	scripts/changelog | github-release release \
-
-
 github-release:
 	set -o pipefail; \
-	echo -n "test" | github-release release \
+	scripts/changelog | github-release release \
 	--user optimizely \
 	--repo aws-okta \
+	$(GITHUB_RELEASE_FLAGS) \
 	--tag $(VERSION) \
 	--description - \
 	--name $(VERSION) 
