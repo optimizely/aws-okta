@@ -61,10 +61,11 @@ jobs:
           command: |
             sudo make -f Makefile.tools nfpm-debian rpmbuild-debian
       - run:
-          name: Install libusb
+          name: Install libusb, brew
           command: |
             sudo apt update -q
             sudo apt install -yq libusb-dev libusb-1.0.0-dev
+            /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
       - run:
           name: Make distributables
           command: |
@@ -121,8 +122,6 @@ jobs:
 
               # yes | ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install)" || true
               /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-              # eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-              # brew install go@1.17 libusb 
               brew install go@1.17  
               export PATH=/usr/local/opt/go@1.17/bin:/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:$PATH
               curl -Ls https://github.com/goreleaser/nfpm/releases/download/v1.2.0/nfpm_1.2.0_Darwin_x86_64.tar.gz > nfpm.tar.gz
