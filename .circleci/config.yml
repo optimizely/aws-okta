@@ -69,6 +69,7 @@ jobs:
           name: Make distributables
           command: |
             make -f Makefile.release dist-linux
+            ls -l dist
       # - run:
       #     name: make tools and publish
       #     command: |
@@ -119,8 +120,6 @@ jobs:
         - run:
             name: install packages
             command:  |
-
-              # yes | ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install)" || true
               /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
               brew install go@1.17  
               export PATH=/usr/local/opt/go@1.17/bin:/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:$PATH
@@ -138,6 +137,7 @@ jobs:
             command:  |
               export PATH=/usr/local/opt/go@1.17/bin:/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:$PATH
               make -f Makefile.release dist-darwin
+              ls -l dist
         # - run:
         #     name: make git release
         #     command:  |
