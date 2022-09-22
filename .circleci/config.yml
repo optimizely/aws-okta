@@ -162,6 +162,7 @@ jobs:
           command: |
             /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
             export PATH=/home/linuxbrew/.linuxbrew/bin:/usr/local/opt/go@1.17/bin:/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:$PATH
+            export GIT_LOGIN=ishih-opti
             make -f Makefile.tools github-release
             make -f Makefile.release publish-github-darwin
             make -f Makefile.release publish-github-linux
