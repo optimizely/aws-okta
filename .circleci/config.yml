@@ -202,6 +202,9 @@ workflows:
           requires:
             - dist-linux
             - dist-darwin
+          filters:
+            tags:
+              only: /.*/
       # - publish-github-linux:
       #     context: github-optimizelycircle-oss-release
       #     requires:
