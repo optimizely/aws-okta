@@ -215,6 +215,7 @@ workflows:
           requires:
             - dist-linux
             - dist-darwin
+            - publish-github
           filters:
             # never publish from a branch event
             branches:
