@@ -65,7 +65,6 @@ jobs:
           command: |
             sudo apt update -q
             sudo apt install -yq libusb-dev libusb-1.0.0-dev
-            /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
       - run:
           name: Make distributables
           command: |
@@ -151,19 +150,6 @@ jobs:
         - persist_to_workspace:
             root: .
             paths: ['dist/*']
-  # publish-github-darwin:
-  #   macos:
-  #     xcode: 12.5.1 # indicate our selected version of Xcode
-  #   steps:
-  #     - checkout
-  #     - attach_workspace: { at: . }
-  #     - run:
-  #         name: Install tools
-  #         command: |
-  #           echo "======  the end ====="
-  #           # export PATH=/usr/local/opt/go@1.17/bin:/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:$PATH
-  #           # make -f Makefile.tools github-release
-  #           # make -f Makefile.release publish-github-darwin
   publish-github:
     docker:
       - image: circleci/golang:1.17
@@ -174,6 +160,7 @@ jobs:
       - run:
           name: Install tools
           command: |
+            /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
             export PATH=/home/linuxbrew/.linuxbrew/bin:/usr/local/opt/go@1.17/bin:/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:$PATH
             make -f Makefile.tools github-release
             make -f Makefile.release publish-github-linux
@@ -215,14 +202,6 @@ workflows:
           requires:
             - dist-linux
             - dist-darwin
-          filters:
-            # never publish from a branch event
-            branches:
-              ignore: /.*/
-            # disabled (temporarily?) due to https://github.com/optimizely/aws-okta/issues/301
-            # release only on tag push events like vX[.Y.Z...][-whatever]
-            # tags:
-            #   only: /v[0-9]+(\.[0-9]+)*(-[a-zA-Z0-9-]+)?/
       # - publish-github-linux:
       #     context: github-optimizelycircle-oss-release
       #     requires:
