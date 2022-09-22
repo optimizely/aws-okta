@@ -5,7 +5,8 @@
 # This makefile is meant for humans
 
 # VERSION := $(shell git describe --tags --always --dirty="-dev")
-VERSION := $(shell git describe --tags --always --dirty="-dev"|cut -d"-" -f 1 )-test
+# VERSION := $(shell git describe --tags --always --dirty="-dev"|cut -d"-" -f 1 )
+VERSION := $(shell echo "v2.0.0")
 LDFLAGS := -ldflags='-X "main.Version=$(VERSION)"'
 
 test:
