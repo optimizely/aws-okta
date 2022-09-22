@@ -76,9 +76,9 @@ jobs:
       #       export PATH=/home/linuxbrew/.linuxbrew/bin/:$PATH
       #       make -f Makefile.tools github-release
       #       make -f Makefile.release publish-github-linux
-      - persist_to_workspace:
-          root: .
-          paths: ['dist/*']
+      # - persist_to_workspace:
+      #     root: .
+      #     paths: ['dist/*']
 
   # publish-packagecloud:
   #   docker:
