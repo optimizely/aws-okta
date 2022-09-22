@@ -56,8 +56,7 @@ github-release:
 	--repo aws-okta \
 	--tag $(VERSION) \
 	--description - \
-	--name $(VERSION) \
-	--pre-release
+	--name $(VERSION) 
 
 publish-github-darwin-bin: dist/aws-okta-$(VERSION)-darwin-amd64 | github-release
 	github-release upload \
