@@ -4,12 +4,7 @@
 #
 # This makefile is meant for humans
 
-<<<<<<< HEAD
 VERSION := $(shell git describe --tags --always --dirty="-dev"|cut -d"-" -f 1)
-=======
-# VERSION := $(shell git describe --tags --always --dirty="-dev")
-VERSION := $(shell git describe --tags --always --dirty="-dev"|cut -d"-" -f 1 )-test
->>>>>>> parent of 87238d3 (remove all related to packagecloud not in use)
 LDFLAGS := -ldflags='-X "main.Version=$(VERSION)"'
 
 test:
