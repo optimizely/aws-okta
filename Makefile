@@ -4,7 +4,7 @@
 #
 # This makefile is meant for humans
 
-VERSION := $(shell git describe --tags --always --dirty="-dev"|cut -d"-" -f 1 )-test
+VERSION := $(shell git describe --tags --always --dirty="-dev"|cut -d"-" -f 1)
 LDFLAGS := -ldflags='-X "main.Version=$(VERSION)"'
 
 test:

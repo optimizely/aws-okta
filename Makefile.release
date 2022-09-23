@@ -9,7 +9,7 @@ include Makefile
 SHELL := /bin/bash
 
 # TODO: use this consistently; 99% of the time, we don't want a v
-VERSION_NO_V := $(patsubst v%,%,$(VERSION))-test
+VERSION_NO_V := $(patsubst v%,%,$(VERSION))
 
 publish: publish-github 
 
