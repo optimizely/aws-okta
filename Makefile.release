@@ -58,8 +58,7 @@ github-release:
  	--user optimizely \
  	--repo aws-okta \
  	--tag $(VERSION) \
- 	--name $(VERSION) \
-	; sleep 20
+ 	--name $(VERSION) 
 
 publish-github-darwin-bin: dist/aws-okta-$(VERSION)-darwin-amd64 | github-release
 	github-release upload \
