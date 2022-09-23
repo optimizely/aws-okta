@@ -120,7 +120,7 @@ workflows:
   # currently we only build/publish for linux: macOS builds require non-FOSS
   # Keychain libs that require a macOS host to build on
   # https://github.com/optimizely/aws-okta/issues/81
-  test-dist-publish:
+  dist-publish:
     jobs:
       # - test
       # - test-build-golang-prev
