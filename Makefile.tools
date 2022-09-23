@@ -28,7 +28,6 @@ github-release:
 
 package_cloud:
  	gem install package_cloud
-
  	brew install github-release
  
 .PHONY: nfpm-debian \
@@ -37,3 +36,4 @@ package_cloud:
 	sha256sum-darwin \
 	github-release \
  	package_cloud
+	
