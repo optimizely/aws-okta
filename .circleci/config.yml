@@ -101,7 +101,7 @@ jobs:
             paths: ['dist/*']
   publish-github:
     docker:
-      - image: circleci/golang:1.17
+      - image: circleci/golang:1.13
     working_directory: /go/src/github.com/optimizely/aws-okta
     steps:
       - checkout
