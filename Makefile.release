@@ -57,7 +57,7 @@ github-release:
 	--tag $(VERSION) \
 	--description - \
 	--name $(VERSION) \
-	--pre-release
+	--pre-release; sleep 20
 
 publish-github-darwin-bin: dist/aws-okta-$(VERSION)-darwin-amd64 | github-release
 	github-release upload \

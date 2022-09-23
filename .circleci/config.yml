@@ -69,7 +69,6 @@ jobs:
           name: Make distributables
           command: |
             make -f Makefile.release dist-linux
-            ls -l dist
       # - run:
       #     name: make tools and publish
       #     command: |
