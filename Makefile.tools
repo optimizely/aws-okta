@@ -27,13 +27,11 @@ github-release:
 	brew install github-release
 
 package_cloud:
- 	gem install package_cloud
- 	brew install github-release
- 
+ 	gem install package_cloud 
+	 
 .PHONY: nfpm-debian \
 	rpmbuild-debian \
 	rpmbuild-darwin \
 	sha256sum-darwin \
 	github-release \
  	package_cloud
-	
