@@ -61,7 +61,7 @@ jobs:
           command: |
             sudo make -f Makefile.tools nfpm-debian rpmbuild-debian
       - run:
-          name: Install libusb, brew
+          name: Install libusb
           command: |
             sudo apt update -q
             sudo apt install -yq libusb-dev libusb-1.0.0-dev
