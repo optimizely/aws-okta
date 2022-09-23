@@ -51,16 +51,16 @@ publish-packagecloud: publish-packagecloud-deb publish-packagecloud-rpm
 
 github-release:
 	set -o pipefail; \
-	echo -n | github-release -v release \
+	echo -n | github-release release \
 	--user optimizely \
 	--repo aws-okta \
 	--tag $(VERSION) \
 	--description - \
 	--name $(VERSION) \
-	--pre-release ; sleep 60
+	--pre-release
 
 publish-github-darwin-bin: dist/aws-okta-$(VERSION)-darwin-amd64 | github-release
-	github-release -v upload \
+	github-release upload \
 	--auth-user $$GIT_LOGIN \
 	--user optimizely \
 	--repo aws-okta \
@@ -70,7 +70,7 @@ publish-github-darwin-bin: dist/aws-okta-$(VERSION)-darwin-amd64 | github-releas
 	--file $<
 
 publish-github-darwin-bin-arm64: dist/aws-okta-$(VERSION)-darwin-arm64 | github-release
-	github-release -v upload \
+	github-release upload \
 	--user optimizely \
 	--repo aws-okta \
 	--tag $(VERSION) \
