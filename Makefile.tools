@@ -22,12 +22,12 @@ rpmbuild-darwin:
 
 sha256sum-darwin:
 	brew install coreutils 
-	test ! -f  /usr/local/bin/sha256sum && ln -s $$(which gsha256sum) /usr/local/bin/sha256sum
+	test -f  /usr/local/bin/sha256sum && ln -s $$(which gsha256sum) /usr/local/bin/sha256sum
 	# && export PATH=/usr/local/opt/coreutils/libexec/gnubin:$PATH
 	# && ln -s $$(which gsha256sum) /usr/local/bin/sha256sum
 
 github-release:
-	brew install github-release
+	test -f  /usr/local/bin/github-release  || brew install github-release
 
 package_cloud:
 	gem install package_cloud 
