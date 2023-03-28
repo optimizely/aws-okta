@@ -6,6 +6,9 @@
 
 ## Installing
 
+🚨🚨[For Optimizely, install instructions here.](https://confluence.sso.episerver.net/pages/viewpage.action?spaceKey=EXPENG&title=aws-okta+temporary+solution)
+
+
 [See the wiki for more installation options.](https://github.com/segmentio/aws-okta/wiki/Installation)
 
 ### MacOS
