@@ -39,6 +39,13 @@ $ aws-okta add
 
 This will prompt you for your Okta organization, custom domain, region, username, and password. These credentials will then be stored in your keyring for future use.
 
+For pci you will need to run
+
+```bash
+aws-okta add --account=pci
+```
+NOTE: The organization for pci is optimizelypci. this will store the credentials in a second account and allow you to store both the generic Okta credentials as well as the PCI ones.
+
 ### Exec
 
 ```bash
